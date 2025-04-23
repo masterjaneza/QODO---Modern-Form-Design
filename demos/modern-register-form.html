@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Register Form</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='16' cy='16' r='16' fill='%236366f1'/%3E%3Cellipse cx='16' cy='13' rx='5' ry='5' fill='white'/%3E%3Cpath d='M8 25c0-3.866 3.582-7 8-7s8 3.134 8 7' fill='white'/%3E%3C/svg%3E">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-dark: #4338ca;
+        --accent: #f472b6;
+        --bg-gradient: linear-gradient(135deg, #6366f1 0%, #f472b6 100%);
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --input-bg: #f3f4f6;
+        --input-border: #d1d5db;
+        --input-focus: #6366f1;
+        --error: #ef4444;
+        --success: #22c55e;
+        --shadow: 0 8px 32px 0 rgba(60, 60, 120, 0.15);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: var(--bg-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.5s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #three-bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+        background: transparent;
+      }
+
+      .register-container {
+        background: var(--card-bg);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        padding: 2.5rem 2rem;
+        max-width: 420px;
+        width: 100%;
+        margin: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+        position: relative;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .register-header {
+        text-align: center;
+      }
+      .register-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+        font-size: 2rem;
+        color: var(--primary-dark);
+        letter-spacing: -1px;
+      }
+      .register-header p {
+        color: #6b7280;
+        font-size: 1rem;
+        margin: 0;
+      }
+
+      form {
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: 1fr;
+      }
+
+      .form-group {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Fix: Prevent label from overflowing rounded corners */
+        border-radius: 0.75rem; /* Match input border-radius */
+      }
+
+      .form-group input {
+        padding: 1.1rem 1rem 0.5rem 1rem;
+        border: 1.5px solid var(--input-border);
+        border-radius: 0.75rem;
+        background: var(--input-bg);
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        font-family: inherit;
+        z-index: 1;
+        position: relative;
+      }
+
+      .form-group input:focus {
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 2px #6366f133;
+      }
+
+      .form-group label {
+        position: absolute;
+        left: 1rem;
+        top: 1.1rem;
+        color: #6b7280;
+        font-size: 1rem;
+        pointer-events: none;
+        background: var(--input-bg); /* Fix: Match input background */
+        transition: 0.2s;
+        padding: 0 0.25rem;
+        z-index: 2;
+      }
+
+      .form-group input:focus + label,
+      .form-group input:not(:placeholder-shown) + label {
+        top: 0.2rem;
+        left: 0.85rem;
+        font-size: 0.85rem;
+        color: var(--primary);
+        background: var(--card-bg); /* Fix: Match card background for seamless look */
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .form-group .error-message {
+        color: var(--error);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        min-height: 1em;
+        transition: color 0.2s;
+      }
+
+      .register-btn {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px 0 #6366f133;
+        transition: background 0.2s, transform 0.1s;
+        margin-top: 0.5rem;
+      }
+      .register-btn:hover,
+      .register-btn:focus {
+        background: var(--primary-dark);
+        transform: translateY(-2px) scale(1.02);
+      }
+
+      .success-message {
+        color: var(--success);
+        text-align: center;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        min-height: 1.5em;
+        transition: color 0.2s;
+      }
+
+      @media (max-width: 600px) {
+        .register-container {
+          padding: 1.5rem 0.5rem;
+          border-radius: 1rem;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="three-bg-canvas"></canvas>
+    <div class="register-container">
+      <div class="register-header">
+        <h2>Create Account</h2>
+        <p>Join our community! Please fill in the form below.</p>
+      </div>
+      <form id="registerForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              required
+              placeholder=" "
+              autocomplete="given-name"
+            />
+            <label for="firstName">First Name</label>
+            <div class="error-message" id="firstNameError"></div>
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              required
+              placeholder=" "
+              autocomplete="family-name"
+            />
+            <label for="lastName">Last Name</label>
+            <div class="error-message" id="lastNameError"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder=" "
+            autocomplete="email"
+          />
+          <label for="email">Email Address</label>
+          <div class="error-message" id="emailError"></div>
+        </div>
+        <div class="form-group">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            placeholder=" "
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <label for="password">Password</label>
+          <div class="error-message" id="passwordError"></div>
+        </div>
+        <div class="form-group">
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            placeholder=" "
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="error-message" id="confirmPasswordError"></div>
+        </div>
+        <button type="submit" class="register-btn">Register</button>
+        <div class="success-message" id="successMessage"></div>
+      </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+    <script>
+      // Helper validation functions
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Clear previous errors
+          [
+            "firstName",
+            "lastName",
+            "email",
+            "password",
+            "confirmPassword",
+          ].forEach((id) => {
+            document.getElementById(id + "Error").textContent = "";
+          });
+          document.getElementById("successMessage").textContent = "";
+
+          // Get values
+          const firstName = document.getElementById("firstName").value.trim();
+          const lastName = document.getElementById("lastName").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          let valid = true;
+
+          if (!firstName) {
+            document.getElementById("firstNameError").textContent =
+              "First name is required.";
+            valid = false;
+          }
+          if (!lastName) {
+            document.getElementById("lastNameError").textContent =
+              "Last name is required.";
+            valid = false;
+          }
+          if (!email) {
+            document.getElementById("emailError").textContent =
+              "Email is required.";
+            valid = false;
+          } else if (!validateEmail(email)) {
+            document.getElementById("emailError").textContent =
+              "Please enter a valid email.";
+            valid = false;
+          }
+          if (!password) {
+            document.getElementById("passwordError").textContent =
+              "Password is required.";
+            valid = false;
+          } else if (password.length < 6) {
+            document.getElementById("passwordError").textContent =
+              "Password must be at least 6 characters.";
+            valid = false;
+          }
+          if (!confirmPassword) {
+            document.getElementById("confirmPasswordError").textContent =
+              "Please confirm your password.";
+            valid = false;
+          } else if (password !== confirmPassword) {
+            document.getElementById("confirmPasswordError").textContent =
+              "Passwords do not match.";
+            valid = false;
+          }
+
+          if (valid) {
+            document.getElementById("successMessage").textContent =
+              "Registration successful! 🎉";
+            // Optionally, reset the form after a delay
+            setTimeout(() => {
+              document.getElementById("registerForm").reset();
+              document.getElementById("successMessage").textContent = "";
+            }, 2000);
+          }
+        });
+
+      // THREE.JS 3D BACKGROUND
+      // -------------------------------------------------
+      let scene, camera, renderer, objects = [];
+      let canvas = document.getElementById('three-bg-canvas');
+
+      function resizeRenderer() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+
+      function createShield() {
+        // Shield: a torus (rim) + a convex shape (face)
+        const group = new THREE.Group();
+
+        // Rim
+        const rimGeometry = new THREE.TorusGeometry(1, 0.08, 16, 100);
+        const rimMaterial = new THREE.MeshStandardMaterial({ color: 0x6366f1, metalness: 0.7, roughness: 0.2 });
+        const rim = new THREE.Mesh(rimGeometry, rimMaterial);
+        group.add(rim);
+
+        // Face (rounded triangle)
+        const shape = new THREE.Shape();
+        shape.moveTo(0, 1.1);
+        shape.lineTo(-0.95, -0.6);
+        shape.quadraticCurveTo(0, -1.2, 0.95, -0.6);
+        shape.lineTo(0, 1.1);
+
+        const extrudeSettings = { depth: 0.18, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.08, bevelSegments: 4, steps: 1 };
+        const faceGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        const faceMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.2, roughness: 0.7, transparent: true, opacity: 0.95 });
+        const face = new THREE.Mesh(faceGeometry, faceMaterial);
+        face.position.z = -0.09;
+        group.add(face);
+
+        group.position.set(-2.2, 1.2, -2.5);
+        group.scale.set(1.2, 1.2, 1.2);
+        return group;
+      }
+
+      function createUserIcon() {
+        // User icon: sphere (head) + cylinder (body)
+        const group = new THREE.Group();
+
+        // Head
+        const headGeometry = new THREE.SphereGeometry(0.35, 32, 32);
+        const headMaterial = new THREE.MeshStandardMaterial({ color: 0xf472b6, metalness: 0.5, roughness: 0.4 });
+        const head = new THREE.Mesh(headGeometry, headMaterial);
+        head.position.y = 0.55;
+        group.add(head);
+
+        // Body
+        const bodyGeometry = new THREE.CylinderGeometry(0.25, 0.32, 0.7, 32);
+        const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x6366f1, metalness: 0.6, roughness: 0.3 });
+        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+        body.position.y = 0.1;
+        group.add(body);
+
+        group.position.set(2.2, -1.1, -2.5);
+        group.scale.set(1.3, 1.3, 1.3);
+        return group;
+      }
+
+      function createFloatingCube() {
+        const geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+        const material = new THREE.MeshStandardMaterial({ color: 0x4338ca, metalness: 0.7, roughness: 0.2 });
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(-2.5, -1.5, -2.5);
+        return cube;
+      }
+
+      function createFloatingSphere() {
+        const geometry = new THREE.SphereGeometry(0.4, 32, 32);
+        const material = new THREE.MeshStandardMaterial({ color: 0xf472b6, metalness: 0.6, roughness: 0.3 });
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.set(2.5, 1.5, -2.5);
+        return sphere;
+      }
+
+      function createFloatingTorus() {
+        const geometry = new THREE.TorusGeometry(0.35, 0.12, 16, 100);
+        const material = new THREE.MeshStandardMaterial({ color: 0x6366f1, metalness: 0.8, roughness: 0.2 });
+        const torus = new THREE.Mesh(geometry, material);
+        torus.position.set(0, 2.2, -2.5);
+        return torus;
+      }
+
+      function initThree() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 5);
+
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setClearColor(0x000000, 0); // transparent
+
+        // Lighting
+        const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambient);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+
+        // 3D Objects
+        const shield = createShield();
+        scene.add(shield);
+        objects.push({ mesh: shield, type: 'shield' });
+
+        const userIcon = createUserIcon();
+        scene.add(userIcon);
+        objects.push({ mesh: userIcon, type: 'user' });
+
+        const cube = createFloatingCube();
+        scene.add(cube);
+        objects.push({ mesh: cube, type: 'cube' });
+
+        const sphere = createFloatingSphere();
+        scene.add(sphere);
+        objects.push({ mesh: sphere, type: 'sphere' });
+
+        const torus = createFloatingTorus();
+        scene.add(torus);
+        objects.push({ mesh: torus, type: 'torus' });
+
+        resizeRenderer();
+        window.addEventListener('resize', resizeRenderer);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Animate objects
+        objects.forEach(obj => {
+          if (obj.type === 'shield') {
+            obj.mesh.rotation.z += 0.003;
+            obj.mesh.rotation.y += 0.002;
+            obj.mesh.position.y = 1.2 + Math.sin(Date.now() * 0.001) * 0.15;
+          } else if (obj.type === 'user') {
+            obj.mesh.rotation.y -= 0.002;
+            obj.mesh.position.x = 2.2 + Math.sin(Date.now() * 0.0012) * 0.12;
+          } else if (obj.type === 'cube') {
+            obj.mesh.rotation.x += 0.01;
+            obj.mesh.rotation.y += 0.012;
+            obj.mesh.position.y = -1.5 + Math.sin(Date.now() * 0.0013) * 0.18;
+          } else if (obj.type === 'sphere') {
+            obj.mesh.position.x = 2.5 + Math.sin(Date.now() * 0.0011) * 0.18;
+            obj.mesh.position.y = 1.5 + Math.cos(Date.now() * 0.0011) * 0.18;
+          } else if (obj.type === 'torus') {
+            obj.mesh.rotation.x += 0.008;
+            obj.mesh.rotation.y += 0.008;
+            obj.mesh.position.y = 2.2 + Math.cos(Date.now() * 0.0015) * 0.15;
+          }
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      // Initialize Three.js background
+      initThree();
+      animate();
+    </script>
+  </body>
+</html>
