@@ -18,7 +18,19 @@ QODO is built to demonstrate how modern form design can elevate the look and fee
 - 🛠️ **Customizable** – tweak styles easily to match your project’s brand
 
 ---
+--- 
 
+## ⚙️ Setup & Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/masterjaneza/the-world-of-movies.git
+   cd the-world-of-movies
+   npm install
+   npm run dev
+   ```
+
+--- 
 
 
 ## 🧪 Browser Support
