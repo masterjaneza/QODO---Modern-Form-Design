@@ -20,15 +20,19 @@ QODO is built to demonstrate how modern form design can elevate the look and fee
 ---
 --- 
 
+---
+
 ## ⚙️ Setup & Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/masterjaneza/QODO---Modern-Form-Design
-   cd the-world-of-movies
-   npm install
-   npm run dev
-   ```
+   git clone https://github.com/masterjaneza/QODO---Modern-Form-Design.git
+
+**Open the Project:**
+
+- Open `index.html` in your browser  
+  **or**
+- Use **Live Server** in VS Code.
 
 --- 
 
